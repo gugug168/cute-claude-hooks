@@ -24,19 +24,56 @@ description: 为 Claude Code 添加粉色中文工具提示。包含完整的自
 
 ## 🚀 快速安装
 
-### Windows (PowerShell)
+### 方式一：GitHub（推荐）
+
+**Windows (PowerShell):**
 ```powershell
 irm https://raw.githubusercontent.com/your-username/cute-claude-hooks/main/install.ps1 | iex
 ```
 
-### macOS/Linux
+**macOS/Linux:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/your-username/cute-claude-hooks/main/install.sh | bash
 ```
 
-### 手动安装
-1. 下载 `tool-tips-post.sh` 到 `~/.claude/hooks/`
-2. 添加配置到 `~/.claude/settings.json`:
+### 方式二：Gitee 镜像（国内用户推荐）
+
+如果无法访问 GitHub，使用 Gitee 镜像：
+
+**Windows (PowerShell):**
+```powershell
+irm https://gitee.com/your-username/cute-claude-hooks/raw/main/install-gitee.ps1 | iex
+```
+
+**macOS/Linux:**
+```bash
+curl -fsSL https://gitee.com/your-username/cute-claude-hooks/raw/main/install-gitee.sh | bash
+```
+
+### 方式三：手动安装
+
+**步骤1：创建目录**
+```bash
+# Windows (PowerShell)
+mkdir -Force "$env:USERPROFILE\.claude\hooks"
+
+# macOS/Linux
+mkdir -p ~/.claude/hooks
+```
+
+**步骤2：下载脚本**
+
+从以下任一地址下载 `tool-tips-post.sh`：
+
+| 镜像 | 地址 |
+|------|------|
+| GitHub | `https://raw.githubusercontent.com/your-username/cute-claude-hooks/main/tool-tips-post.sh` |
+| Gitee | `https://gitee.com/your-username/cute-claude-hooks/raw/main/tool-tips-post.sh` |
+| JsDelivr | `https://cdn.jsdelivr.net/gh/your-username/cute-claude-hooks@main/tool-tips-post.sh` |
+
+**步骤3：添加配置**
+
+在 `~/.claude/settings.json` 中添加：
 ```json
 {
   "hooks": {
@@ -48,6 +85,20 @@ curl -fsSL https://raw.githubusercontent.com/your-username/cute-claude-hooks/mai
     ]
   }
 }
+```
+
+### 🌐 可用的 CDN/镜像地址
+
+| 镜像 | 速度 | 可用性 | 推荐场景 |
+|------|------|--------|----------|
+| **GitHub** | 国外快 | ⭐⭐⭐ | 海外用户 |
+| **Gitee** | 国内快 | ⭐⭐⭐ | 国内用户首选 |
+| **JsDelivr** | 全球CDN | ⭐⭐ | 备用方案 |
+| **FastGit** | 较快 | ⭐ | GitHub镜像 |
+
+**JsDelivr 格式：**
+```
+https://cdn.jsdelivr.net/gh/用户名/仓库名@分支/文件路径
 ```
 
 ---
