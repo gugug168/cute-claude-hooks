@@ -102,6 +102,81 @@ jobs:
           echo ""
           echo "✅ Hook 中文提示测试完成!"
 
+      - name: 🌸 执行界面汉化 (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          echo "=== 开始界面汉化 ==="
+          if [ -f ~/.claude/localize/localize.sh ]; then
+            bash ~/.claude/localize/localize.sh || echo "⚠️ 汉化脚本执行遇到问题"
+          else
+            echo "❌ 汉化脚本不存在"
+          fi
+
+      - name: 🌸 执行界面汉化 (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          echo "=== 开始界面汉化 ==="
+          if [ -f ~/.claude/localize/localize.sh ]; then
+            bash ~/.claude/localize/localize.sh || echo "⚠️ 汉化脚本执行遇到问题"
+          else
+            echo "❌ 汉化脚本不存在"
+          fi
+
+      - name: ✅ 验证界面汉化结果
+        shell: bash
+        run: |
+          echo "=== 验证界面汉化 ==="
+          NPM_ROOT=$(npm root -g 2>/dev/null)
+          CLI_PATH="$NPM_ROOT/@anthropic-ai/claude-code/cli.js"
+
+          if [ -f "$CLI_PATH" ]; then
+            echo "📁 CLI 路径: $CLI_PATH"
+            echo ""
+            echo "=== 检查中文关键词 ==="
+
+            # 检查是否有中文翻译
+            CHINESE_COUNT=$(grep -o '[\u4e00-\u9fff]' "$CLI_PATH" 2>/dev/null | wc -l || echo "0")
+            echo "📊 中文字符数量: $CHINESE_COUNT"
+
+            # 检查特定汉化词条
+            echo ""
+            echo "=== 检查关键词条 ==="
+
+            # 检查是否包含中文提示
+            if grep -q "请输入您的请求" "$CLI_PATH" 2>/dev/null; then
+              echo "✅ 找到: 请输入您的请求"
+            fi
+
+            if grep -q "退出" "$CLI_PATH" 2>/dev/null; then
+              echo "✅ 找到: 退出"
+            fi
+
+            if grep -q "帮助" "$CLI_PATH" 2>/dev/null; then
+              echo "✅ 找到: 帮助"
+            fi
+
+            if grep -q "清除" "$CLI_PATH" 2>/dev/null; then
+              echo "✅ 找到: 清除"
+            fi
+
+            # 检查备份文件
+            CLI_BAK="$NPM_ROOT/@anthropic-ai/claude-code/cli.bak.js"
+            if [ -f "$CLI_BAK" ]; then
+              echo ""
+              echo "✅ 备份文件存在: cli.bak.js"
+            fi
+
+            echo ""
+            if [ "$CHINESE_COUNT" -gt 100 ]; then
+              echo "🎉 界面汉化成功！检测到大量中文字符"
+            else
+              echo "⚠️ 界面可能未完全汉化，中文字符较少"
+            fi
+          else
+            echo "❌ 未找到 CLI 文件: $CLI_PATH"
+          fi
+
       - name: 📋 Generate Test Report
         shell: bash
         run: |
