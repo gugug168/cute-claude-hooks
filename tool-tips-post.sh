@@ -33,7 +33,7 @@ get_tip() {
             if [ -n "$bash_desc" ]; then
                 echo "🖥️ $bash_desc"
             elif [ -n "$bash_cmd" ]; then
-                local c=$(echo "$bash_cmd" | head -c 25)
+                c=$(echo "$bash_cmd" | head -c 25)
                 [ ${#bash_cmd} -gt 25 ] && c="${c}..."
                 echo "🖥️ 执行: $c"
             else
