@@ -32,8 +32,8 @@ jobs:
           mkdir -p ~/.claude/hooks
           mkdir -p ~/.claude/localize
 
-          # 复制 Hook 脚本
-          cp hooks/tool-tips-post.sh ~/.claude/hooks/
+          # 复制 Hook 脚本 (文件在根目录)
+          cp tool-tips-post.sh ~/.claude/hooks/
           chmod +x ~/.claude/hooks/tool-tips-post.sh
 
           # 复制汉化文件
