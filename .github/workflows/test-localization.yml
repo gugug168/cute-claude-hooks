@@ -1,6 +1,6 @@
 name: Test Claude Code Localization
 
-on:
+ on:
   push:
     branches: [master]
   pull_request:
@@ -10,7 +10,6 @@ on:
 jobs:
   test-localization:
     runs-on: ubuntu-latest
-
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
@@ -19,7 +18,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: 🔧 Install Claude Code
         run: |
           npm install -g @anthropic-ai/claude-code
@@ -33,6 +31,7 @@ jobs:
           cp tool-tips-post.sh ~/.claude/hooks/
           chmod +x ~/.claude/hooks/tool-tips-post.sh
           cp localize/keyword.conf ~/.claude/localize/
+          cp localize/localize.sh ~/.claude/localize/ 2>/dev/null || true
           echo "✅ Hooks and localize files installed"
 
       - name: 🧪 Test Hook Script
@@ -43,39 +42,30 @@ jobs:
             echo "❌ Hook file not found"
             exit 1
           fi
-
       - name: 🌸 Test Hook Output (中文提示)
         run: |
           echo "=== 模拟 Hook 输入测试 ==="
-
           # 测试 Read 工具
           echo '{"tool_name": "Read", "file_path": "/test/example.py"}' | bash ~/.claude/hooks/tool-tips-post.sh
-
           # 测试 Write 工具
           echo '{"tool_name": "Write", "file_path": "/test/newfile.js"}' | bash ~/.claude/hooks/tool-tips-post.sh
-
           # 测试 Edit 工具
           echo '{"tool_name": "Edit", "file_path": "/src/config.json"}' | bash ~/.claude/hooks/tool-tips-post.sh
-
           # 测试 Bash 工具
           echo '{"tool_name": "Bash", "command": "npm install", "description": "安装依赖"}' | bash ~/.claude/hooks/tool-tips-post.sh
-
           # 测试 Glob 工具
           echo '{"tool_name": "Glob", "pattern": "**/*.ts"}' | bash ~/.claude/hooks/tool-tips-post.sh
-
           # 测试 Grep 工具
           echo '{"tool_name": "Grep", "pattern": "function"}' | bash ~/.claude/hooks/tool-tips-post.sh
-
           echo ""
           echo "✅ Hook 中文提示测试完成!"
-
       - name: 📋 Generate Test Report
         run: |
           echo "## 🌸 Localization Test Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### ✅ Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Claude Code: Installed" >> $GITHUB_STEP_SUMMARY
-          echo "- Hook Files: $(ls ~/.claude/hooks/ 2>/dev/null | wc -l) files" >> $GITHUB_STEP_SUMMARY
-          echo "- Localize Files: $(ls ~/.claude/localize/ 2>/dev/null | wc -l) files" >> $GITHUB_STEP_SUMMARY
-          echo "- Status: Ready for use 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMmary
+          echo "### ✅ Test Results" >> $GITHUB_STEP_SUMmary
+          echo "" >> $GITHUB_STEP_SUMmary
+          echo "- Claude Code: Installed" >> $GITHUB_STEP_SUMmary
+          echo "- Hook Files: $(ls ~/.claude/hooks/ 2>/dev/null | wc -l) files" >> $GITHUB_STEP_SUMary
+          echo "- Localize Files: $(ls ~/.claude/localize/ 2>/dev/null | wc -l) files" >> $GITHUB_STEP_SUMary
+          echo "- Status: Ready for use 🎉" >> $GITHUB_STEP_SUMmary
