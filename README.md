@@ -208,9 +208,11 @@ cute-claude-hooks/
 ├── 📦 install-gitee.ps1      # Windows 安装脚本 (Gitee)
 ├── 📦 install-gitee.sh       # Linux/macOS 安装脚本 (Gitee)
 ├── 📁 localize/              # 界面汉化模块
-│   ├── 📝 keyword.conf       # 关键词翻译配置
-│   ├── 🔧 localize.sh        # Linux/macOS 汉化脚本
-│   ├── 🔧 localize.ps1       # Windows 汉化脚本
+│   ├── 📝 keyword.conf       # 关键词翻译配置 (135词条)
+│   ├── 🔧 localize.js        # Node.js 安全汉化引擎 (首选)
+│   ├── 🔧 localize.sh        # Linux/macOS 汉化脚本 (备选)
+│   ├── 🔧 localize.ps1       # Windows PowerShell 汉化脚本 (备选)
+│   ├── 🔧 localize.py        # Python 汉化脚本 (备选)
 │   ├── 🔄 restore.sh         # Linux/macOS 恢复脚本
 │   └── 🔄 restore.ps1        # Windows 恢复脚本
 ├── 📁 .github/
@@ -230,15 +232,15 @@ cute-claude-hooks/
 
 | 平台 | 状态 | 测试内容 |
 |-----|------|---------|
-| 🐧 Linux (Ubuntu) | ✅ 通过 | Hook脚本语法 + 界面汉化 (139词条) |
-| 🍎 macOS | ✅ 通过 | Hook脚本语法 + 界面汉化 (139词条) |
-| 🪟 Windows | ✅ 通过 | Hook脚本语法 + 界面汉化 (139词条) |
+| 🐧 Linux (Ubuntu) | ✅ 通过 | Hook脚本语法 + 界面汉化 (135词条) |
+| 🍎 macOS | ✅ 通过 | Hook脚本语法 + 界面汉化 (135词条) |
+| 🪟 Windows | ✅ 通过 | Hook脚本语法 + 界面汉化 (135词条) |
 
 ### 测试覆盖
 
 - ✅ **工具提示测试** - 验证 Hook 脚本输出粉色中文提示
-- ✅ **界面汉化测试** - 验证 cli.js 成功翻译 143 个词条
-- ✅ **关键词条验证** - 检查"退出"、"帮助"、"清除"、"配置"、"管理"等词条
+- ✅ **界面汉化测试** - 验证 cli.js 成功翻译 135 个词条
+- ✅ **安全替换验证** - 仅替换 description:"..." 字段，不破坏代码逻辑
 - ✅ **备份文件检查** - 确保 cli.bak.js 备份存在
 
 ---

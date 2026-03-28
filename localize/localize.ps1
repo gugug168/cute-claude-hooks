@@ -49,14 +49,15 @@ function New-Backup {
     }
 }
 
-# ========== Execute Localization ==========
+# ========== Execute Localization (Safe: description-only replacement) ==========
 function Invoke-Localize {
     param($cliPath, $keywordFile)
 
-    $count = 0
     $content = Get-Content $cliPath -Raw -Encoding UTF8
+    $totalReplacements = 0
+    $processedCount = 0
 
-    Write-Pink "Starting Claude Code localization..."
+    Write-Pink "Starting safe localization (description-only)..."
     Write-Host ""
 
     # Read keyword configuration
@@ -65,26 +66,38 @@ function Invoke-Localize {
     }
 
     foreach ($line in $keywords) {
-        $parts = $line.Split("|")
-        if ($parts.Length -lt 2) { continue }
+        $pipeIdx = $line.IndexOf("|")
+        if ($pipeIdx -lt 1) { continue }
 
-        $keyword = $parts[0].Trim()
-        $translation = $parts[1].Trim()
+        $keyword = $line.Substring(0, $pipeIdx).Trim()
+        $translation = $line.Substring($pipeIdx + 1).Trim()
 
         if ([string]::IsNullOrEmpty($keyword)) { continue }
 
         # Escape regex special characters
         $escaped = [regex]::Escape($keyword)
 
-        # Replace double-quoted strings
-        $pattern = "`"$escaped`""
-        $replacement = "`"$translation`""
+        # SAFE: Only replace description:"keyword" and description:`keyword` patterns
+        # This avoids breaking code logic (=== comparisons, ternary expressions, etc.)
+        $matchCount = 0
 
-        if ($content -match $pattern) {
-            $content = $content -replace $pattern, $replacement
-            $count++
+        # Pattern 1: description:"keyword" (double-quoted description values)
+        $patternDouble = "(description:`")(" + $escaped + ")(`")"
+        $matches = [regex]::Matches($content, $patternDouble)
+        $matchCount += $matches.Count
+        $content = $content -replace $patternDouble, "`${1}$translation`${3}"
+
+        # Pattern 2: description:`keyword` (template literal description values)
+        $patternTmpl = "(description:`)(" + $escaped + ")(`)"
+        $matches = [regex]::Matches($content, $patternTmpl)
+        $matchCount += $matches.Count
+        $content = $content -replace $patternTmpl, "`${1}$translation`${3}"
+
+        if ($matchCount -gt 0) {
+            $totalReplacements += $matchCount
+            $processedCount++
             Write-Host "  " -NoNewline
-            Write-Green "OK" -NoNewline
+            Write-Green "+" -NoNewline
             Write-Host " $keyword " -NoNewline
             Write-Yellow "->" -NoNewline
             Write-Host " $translation"
@@ -96,7 +109,7 @@ function Invoke-Localize {
     [System.IO.File]::WriteAllText($cliPath, $content, $utf8NoBom)
 
     Write-Host ""
-    Write-Pink "Localization complete! Processed $count entries"
+    Write-Pink "Localization complete! $processedCount entries, $totalReplacements replacements"
     Write-Yellow "INFO: Restart Claude Code to take effect"
 }
 

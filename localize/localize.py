@@ -1,188 +1,184 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Claude Code 汉化工具 - 改进版
-使用 Python 进行文本替换，支持更可靠的特殊字符处理
+Claude Code Localization Tool - Safe Edition
+Only replaces strings in description:"..." fields to avoid breaking code logic
+License: MIT
 """
 
 import os
 import sys
+import re
 import shutil
 
-# ========== 颜色定义 (跨平台兼容) ==========
+# ========== Color Definitions (Cross-platform) ==========
 import platform
 
-# Windows 需要启用 ANSI 支持
+# Windows ANSI support
 if platform.system() == 'Windows':
     import ctypes
     kernel32 = ctypes.windll.kernel32
     kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 
-RED = '\033[91m'      # Windows 兼容红色
-GREEN = '\033[92m'    # Windows 兼容绿色
-YELLOW = '\033[93m'   # Windows 兼容黄色
-MAGENTA = '\033[95m'  # Windows 兼容粉色
-NC = '\033[0m'        # 无颜色
+RED = '\033[91m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+MAGENTA = '\033[95m'
+NC = '\033[0m'
 
-# ========== 获取脚本目录 ==========
+# ========== Constants ==========
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# ========== 获取 CLI 路径 (Windows 优化) ==========
+# ========== Get Claude Code CLI Path ==========
 def get_cli_paths():
-    """获取 Claude Code CLI 路径"""
-
-    # Windows: 使用环境变量获取 AppData 路径
+    """Get Claude Code CLI path"""
     if platform.system() == 'Windows':
         appdata = os.environ.get('APPDATA', '')
         if appdata:
             npm_modules = os.path.join(appdata, 'npm', 'node_modules')
         else:
-            # 回退到用户目录
             userprofile = os.environ.get('USERPROFILE', '')
             npm_modules = os.path.join(userprofile, 'AppData', 'Roaming', 'npm', 'node_modules')
     else:
-        # Linux/macOS: 使用 npm root -g
         import subprocess
         result = subprocess.run(['npm', 'root', '-g'], capture_output=True, text=True)
         if result.returncode != 0:
-            print(f"{RED}[X] 无法获取 npm 全局目录{NC}")
+            print(f"{RED}Error: Cannot find npm global directory{NC}")
             sys.exit(1)
         npm_modules = result.stdout.strip()
 
     cli_path = os.path.join(npm_modules, '@anthropic-ai', 'claude-code', 'cli.js')
     cli_bak = os.path.join(npm_modules, '@anthropic-ai', 'claude-code', 'cli.bak.js')
 
-    # 调试信息
-    print(f"[DEBUG] npm_modules: {npm_modules}")
-    print(f"[DEBUG] cli_path: {cli_path}")
-    print(f"[DEBUG] cli_path exists: {os.path.exists(cli_path)}")
-
     if not os.path.exists(cli_path):
-        print(f"{RED}[X] 未找到 Claude Code CLI{NC}")
-        print(f"{YELLOW}[TIP] 请先安装: npm install -g @anthropic-ai/claude-code{NC}")
+        print(f"{RED}Error: Claude Code CLI not found. Install: npm install -g @anthropic-ai/claude-code{NC}")
         sys.exit(1)
 
     return cli_path, cli_bak
 
-# ========== 加载关键词配置 ==========
+# ========== Parse Keyword Config ==========
 def load_keywords(keyword_file):
-    """加载关键词配置"""
+    """Load keyword configuration"""
     keywords = []
     if not os.path.exists(keyword_file):
-        print(f"{RED}[X] 未找到关键词配置文件: {keyword_file}{NC}")
+        print(f"{RED}Error: Keyword config not found: {keyword_file}{NC}")
         sys.exit(1)
 
     with open(keyword_file, 'r', encoding='utf-8') as f:
         for line in f:
             line = line.strip()
-            # 跳过空行和注释
             if not line or line.startswith('#'):
                 continue
-            # 跳过没有分隔符的行
             if '|' not in line:
                 continue
 
-            parts = line.split('|', 1)
-            if len(parts) < 2:
-                continue
-
-            keyword = parts[0].strip()
-            translation = parts[1].strip()
+            pipe_idx = line.index('|')
+            keyword = line[:pipe_idx].strip()
+            translation = line[pipe_idx + 1:].strip()
 
             if keyword and translation:
-                # 安全检查：跳过可能误伤代码的词条
-                # 1. 太短的词条容易误伤技术标识符
-                if len(keyword) < 6:
-                    print(f"  {YELLOW}[SKIP]{NC} 太短可能危险: {keyword}")
-                    continue
-                # 2. 包含下划线的可能是技术标识符
-                if '_' in keyword:
-                    print(f"  {YELLOW}[SKIP]{NC} 含下划线可能是代码: {keyword}")
-                    continue
                 keywords.append((keyword, translation))
 
-    print(f"[INFO] 加载了 {len(keywords)} 个词条")
+    print(f"Loaded {len(keywords)} entries")
     return keywords
 
-# ========== 创建备份 ==========
+# ========== Safe Replacement ==========
+# ONLY replace description:"keyword" and description:`keyword` patterns
+# This is the ONLY safe way to localize - description fields are display-only text
+def safe_replace(content, keyword, translation):
+    """Replace ONLY description:'keyword' patterns (safe, won't break code)"""
+    count = 0
+    escaped = re.escape(keyword)
+
+    # Replace description:"keyword" (double-quoted description values)
+    pattern_double = r'(description:")(' + escaped + r')(")'
+    content, n = re.subn(pattern_double, r'\g<1>' + translation + r'\g<3>', content)
+    count += n
+
+    # Replace description:`keyword` (template literal description values)
+    pattern_tmpl = r'(description:`)(' + escaped + r')(`)'
+    content, n = re.subn(pattern_tmpl, r'\g<1>' + translation + r'\g<3>', content)
+    count += n
+
+    return content, count
+
+# ========== Create Backup ==========
 def create_backup(cli_path, cli_bak):
-    """创建备份"""
+    """Create backup of original CLI"""
     if not os.path.exists(cli_bak):
         shutil.copy(cli_path, cli_bak)
-        print(f"{GREEN}[OK] 已创建备份: cli.bak.js{NC}")
+        print(f"{GREEN}OK: Backup created{NC}")
     else:
-        print(f"{YELLOW}[INFO] 备份已存在，跳过创建{NC}")
+        print(f"{YELLOW}Info: Backup exists, skipping{NC}")
 
-# ========== 执行汉化 ==========
+# ========== Execute Localization ==========
 def do_localize(cli_path, cli_bak, keywords):
-    """执行汉化"""
-    # 从备份恢复
+    """Execute safe localization"""
+    # Restore from backup first
     if os.path.exists(cli_bak):
         shutil.copy(cli_bak, cli_path)
-        print(f"[INFO] 已从备份恢复原始文件")
     else:
-        print(f"{RED}[X] 未找到备份文件，请先运行一次汉化{NC}")
+        print(f"{RED}Error: Backup not found{NC}")
         sys.exit(1)
 
-    # 读取文件内容
     with open(cli_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    count = 0
-    print(f"\n{MAGENTA}[*] 开始汉化...{NC}")
-    for keyword, translation in keywords:
-        # 直接替换文本（不依赖引号）
-        if keyword in content:
-            content = content.replace(keyword, translation)
-            count += 1
-            # 简化输出，避免编码问题
-            print(f"  {GREEN}[+]{NC} replaced")
+    total_replacements = 0
+    processed = 0
+    print(f"\n{MAGENTA}Starting localization... ({len(keywords)} entries){NC}")
+    print("")
 
-    # 保存汉化后的文件
+    for keyword, translation in keywords:
+        content, count = safe_replace(content, keyword, translation)
+        if count > 0:
+            total_replacements += count
+            processed += 1
+            print(f"  {GREEN}+{NC} {keyword} {YELLOW}->{NC} {translation}")
+
     with open(cli_path, 'w', encoding='utf-8') as f:
         f.write(content)
 
-    print(f"\n{MAGENTA}[*] 汉化完成！共处理 {count} 个词条{NC}")
-    print("")
-    print(f"{GREEN}[OK] 重启 Claude Code 即可看到中文界面{NC}")
+    print(f"\n{MAGENTA}Localization complete! {processed} entries, {total_replacements} replacements{NC}")
+    print(f"{YELLOW}Info: Restart Claude Code to take effect{NC}")
 
-# ========== 恢复英文 ==========
+# ========== Restore English ==========
 def restore_english(cli_path, cli_bak):
-    """恢复英文界面"""
+    """Restore original English interface"""
     if not os.path.exists(cli_bak):
-        print(f"{YELLOW}[INFO] 未找到备份文件，可能未进行过汉化{NC}")
+        print(f"{YELLOW}Info: Backup not found, may not have been localized{NC}")
         return
 
     shutil.copy(cli_bak, cli_path)
-    print(f"{GREEN}[OK] 已恢复英文界面{NC}")
-    print(f"{YELLOW}[INFO] 重启 Claude Code 即可生效{NC}")
+    print(f"{GREEN}OK: English interface restored{NC}")
+    print(f"{YELLOW}Info: Restart Claude Code to take effect{NC}")
 
-# ========== 主函数 ==========
+# ========== Main ==========
 def main():
-    print(f"{MAGENTA}========================================{NC}")
-    print(f"{MAGENTA}    Claude Code Localization Tool{NC}")
-    print(f"{MAGENTA}========================================{NC}")
+    print(f"{MAGENTA}=============================================={NC}")
+    print(f"{MAGENTA}     Claude Code Localization Tool{NC}")
+    print(f"{MAGENTA}=============================================={NC}")
     print("")
 
     keyword_file = os.path.join(SCRIPT_DIR, "keyword.conf")
 
-    # 获取 CLI 路径
+    # Get CLI path
     cli_path, cli_bak = get_cli_paths()
-    print(f"{GREEN}[OK] Claude Code Path: {cli_path}{NC}")
+    print(f"{GREEN}Path: {cli_path}{NC}")
     print("")
 
-    # 检查是否是恢复模式
+    # Check restore mode
     if len(sys.argv) > 1 and sys.argv[1] == '--restore':
         restore_english(cli_path, cli_bak)
         return
 
-    # 创建备份
+    # Create backup
     create_backup(cli_path, cli_bak)
 
-    # 加载关键词
+    # Load keywords
     keywords = load_keywords(keyword_file)
 
-    # 执行汉化
+    # Execute localization
     do_localize(cli_path, cli_bak, keywords)
 
 if __name__ == "__main__":
