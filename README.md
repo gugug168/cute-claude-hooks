@@ -2,97 +2,222 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-orange.svg)](https://claude.ai/code)
+[![Cross Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-green.svg)](https://github.com/gugug168/cute-claude-hooks)
+[![GitHub Actions](https://github.com/gugug168/cute-claude-hooks/workflows/%F0%9F%A7%AA%20%E8%B7%A8%E5%B9%B3%E5%8F%B0%E6%B2%99%E7%9B%92%E6%B5%8B%E8%AF%95/badge.svg)](https://github.com/gugug168/cute-claude-hooks/actions)
 
-让 Claude Code 拥有完整的中文体验！
+> 🌸 让 Claude Code 拥有完整的中文体验！专为编程小白设计
+
+## 📸 效果预览
+
+### 🎯 工具提示效果
+
+每个 Claude Code 执行的操作都会显示粉色中文提示，让你清楚知道它在做什么：
+
+```
+🌸 小白提示：🔐 检查 GitHub 登录状态（看是否已登录、登录的是哪个账号） 🌸
+🌸 小白提示：🚀 列出 GitHub Actions 运行记录（查看自动化测试历史） 🌸
+🌸 小白提示：📦 安装依赖包（下载项目所需的库） 🌸
+🌸 小白提示：📚 查看提交日志（看所有修改记录） 🌸
+```
+
+### 🌐 界面汉化效果
+
+| 原文 (English) | 译文 (中文) |
+|---------------|------------|
+| Welcome back! | 欢迎回来! |
+| Auto-compact | 自动压缩 |
+| Thinking mode | 深度思考模式 |
+| Esc to cancel | Esc 取消 |
+| Enter to submit · Esc to cancel | Enter 提交 · Esc 取消 |
+| Recent activity | 最近活动记录 |
+| Tips for getting started | 入门技巧 |
+
+### 📋 支持的命令解释
+
+| 命令类型 | 示例命令 | 中文解释 |
+|---------|---------|---------|
+| **GitHub CLI** | `gh run list` | 🚀 列出 GitHub Actions 运行记录（查看自动化测试历史） |
+| | `gh auth status` | 🔐 检查 GitHub 登录状态（看是否已登录、登录的是哪个账号） |
+| | `gh repo create` | 📦 在 GitHub 上创建新仓库（新建一个代码存储库） |
+| **Git** | `git push` | 📚 推送到远程仓库（上传代码到服务器） |
+| | `git log` | 📜 查看提交日志（看所有修改记录） |
+| | `git status` | 📊 查看工作区状态（哪些文件改了） |
+| **npm** | `npm install` | 📦 安装依赖包（下载项目所需的库） |
+| | `npm run build` | 🏗️ 构建项目（编译打包代码） |
+| **pip** | `pip install` | 📦 安装 Python 包（下载 Python 库） |
+| | `pip list` | 📋 列出已安装的包（查看 Python 库） |
+| **网络** | `curl` | 🌐 获取网页内容（下载或查看网页数据） |
+| | `ping` | 🌐 测试网络连接（检查能否连上某个地址） |
+| **文件** | `cat` | 📖 查看文件内容（打开文本文件阅读） |
+| | `mkdir` | 📁 创建新目录（新建文件夹） |
+
+> 💡 支持 **100+** 常用命令的详细中文解释！
+
+---
 
 ## ✨ 特性
 
-- 🎨 **粉色中文提示** - 工具操作一目了然
+- 🎨 **粉色中文提示** - 每个操作都有详细的中文解释，小白也能看懂
 - 🌸 **界面汉化** - 配置面板、命令说明、快捷键提示全中文
 - 🖥️ **跨平台** - Windows/macOS/Linux 通用
-- 📦 **轻量级** - 无依赖，- 🔧 **易自定义** - 完整的自定义指南
+- 📦 **轻量级** - 无依赖，秒级安装
+- 🔧 **易自定义** - 完整的自定义指南
 - 🇨🇳 **国内镜像** - 支持 Gitee 加速安装
+- 🧪 **自动测试** - GitHub Actions 三平台自动测试
+
+---
 
 ## 📦 安装
 
-### 方式一：交互式安装（推荐）
-
-运行后选择安装模式：
+### 方式一：一键安装（推荐）
 
 **Windows (PowerShell):**
 ```powershell
-irm https://raw.githubusercontent.com/your-username/cute-claude-hooks/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/gugug168/cute-claude-hooks/main/install.ps1 | iex
 ```
 
 **macOS/Linux:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/your-username/cute-claude-hooks/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/gugug168/cute-claude-hooks/main/install.sh | bash
 ```
 
-**安装选项：**
-```
-[1] 仅安装工具提示 (推荐新手)
-[2] 仅安装界面汉化
-[3] 全部安装 (完整中文体验) ← 推荐
-[4] 卸载
-```
-
-### 方式二：Gitee 镜像（国内用户）
+### 方式二：Gitee 镜像（国内用户推荐）
 
 **Windows (PowerShell):**
 ```powershell
-irm https://gitee.com/your-username/cute-claude-hooks/raw/main/install-gitee.ps1 | iex
+irm https://gitee.com/gugug168/cute-claude-hooks/raw/main/install-gitee.ps1 | iex
 ```
 
 **macOS/Linux:**
 ```bash
-curl -fsSL https://gitee.com/your-username/cute-claude-hooks/raw/main/install-gitee.sh | bash
+curl -fsSL https://gitee.com/gugug168/cute-claude-hooks/raw/main/install-gitee.sh | bash
 ```
 
-### 方式三：手动安装
+### 安装选项
 
-1. 下载 `tool-tips-post.sh` 到 `~/.claude/hooks/`
-2. 下载 `localize/` 目录下的所有文件到 `~/.claude/localize/`
-3. 在 `~/.claude/settings.json` 中添加：
-```json
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Bash|Read|Write|Edit|Glob|Grep|mcp__*",
-        "hooks": [{ "type": "command", "command": "bash ~/.claude/hooks/tool-tips-post.sh" }]
-      }
-    ]
-  }
-}
+```
+╔════════════════════════════════════════╗
+║     🌸 Cute Claude Hooks 安装向导 🌸   ║
+╠════════════════════════════════════════╣
+║  [1] 仅安装工具提示 (推荐新手)         ║
+║  [2] 仅安装界面汉化                    ║
+║  [3] 全部安装 (完整中文体验) ← 推荐    ║
+║  [4] 卸载                              ║
+╚════════════════════════════════════════╝
 ```
 
-## 🎯 效果预览
+---
 
-### 己具提示
-| 工具 | 揌示效果 |
-|------|----------|
-| Read | 🌸 小白提示：📖 读取文件: config.json 🌸 |
-| Write | 🌸 小白提示：📝 写入文件: output.md 🌸 |
-| Edit | 🌸 小白提示：✏️ 编辑文件: settings.json 🌸 |
-| Bash | 🌸 小白提示：🖥️ 安装依赖包 🌸 |
-| Glob | 🌸 小白提示：🔍 搜索文件: "*.md" 🌸 |
-| Grep | 🌸 小白提示：🔎 搜索内容: "function" 🌸 |
-| MCP | 🌸 小白提示：📚 文档: get-library-docs 🌸 |
+## 🎯 功能详解
 
-### 界面汉化
+### 1️⃣ 工具提示 (Tool Tips)
 
-| 原文 | 译文 |
-|------|------|
-| Auto-compact | 自动压缩 |
-| Thinking mode | 深度思考模式 |
-| Welcome back! | 欢迎回来! |
-| Esc to cancel | Esc 取消 |
-| /compact - Clear conversation... | 压缩对话上下文... |
+安装后，Claude Code 每次执行操作都会显示粉色中文提示：
+
+```
+✅ 操作成功示例：
+
+🌸 小白提示：🔐 检查 GitHub 登录状态（看是否已登录、登录的是哪个账号） 🌸
+🌸 小白提示：🚀 列出 GitHub Actions 运行记录（查看自动化测试历史） 🌸
+🌸 小白提示：📦 安装依赖包（下载项目所需的库） 🌸
+```
+
+### 2️⃣ 界面汉化 (Localization)
+
+将 Claude Code 的英文界面翻译成中文：
+
+- ✅ `/config` 配置面板汉化
+- ✅ 斜杠命令说明汉化
+- ✅ 快捷键提示汉化
+- ✅ 欢迎界面汉化
+- ✅ 状态信息汉化
+
+### 3️⃣ 恢复功能 (Restore)
+
+随时可以恢复到英文界面：
+
+**Windows:**
+```powershell
+~/.claude/localize/restore.ps1
+```
+
+**macOS/Linux:**
+```bash
+~/.claude/localize/restore.sh
+```
+
+---
+
+## 🔧 快速自定义
+
+### 修改提示颜色
+
+编辑 `~/.claude/hooks/tool-tips-post.sh` 最后一行：
+
+```bash
+# 修改颜色代码
+printf '\033[38;5;206m...'  # 206=粉色
+printf '\033[38;5;196m...'  # 196=红色
+printf '\033[38;5;46m...'   # 46=绿色
+printf '\033[38;5;33m...'   # 33=蓝色
+```
+
+### 添加新的汉化词条
+
+编辑 `~/.claude/localize/keyword.conf`：
+
+```bash
+# 格式: 原文|译文
+Your-english-text|你的中文翻译
+```
+
+---
+
+## 📁 文件结构
+
+```
+cute-claude-hooks/
+├── 📄 README.md              # 本文档
+├── 📄 SKILL.md               # 完整自定义指南
+├── 📄 LICENSE                # MIT 许可证
+├── 🔧 tool-tips-post.sh      # 工具提示 Hook 脚本
+├── 📦 install.ps1            # Windows 安装脚本
+├── 📦 install.sh             # Linux/macOS 安装脚本
+├── 📦 install-gitee.ps1      # Windows 安装脚本 (Gitee)
+├── 📦 install-gitee.sh       # Linux/macOS 安装脚本 (Gitee)
+├── 📁 localize/              # 界面汉化模块
+│   ├── 📝 keyword.conf       # 关键词翻译配置
+│   ├── 🔧 localize.sh        # Linux/macOS 汉化脚本
+│   ├── 🔧 localize.ps1       # Windows 汉化脚本
+│   ├── 🔄 restore.sh         # Linux/macOS 恢复脚本
+│   └── 🔄 restore.ps1        # Windows 恢复脚本
+├── 📁 .github/
+│   └── 📁 workflows/
+│       └── 🧪 test-localize.yml  # 跨平台自动测试
+└── 📁 screenshots/           # 截图目录
+    └── 📸 (待添加截图)
+```
+
+---
+
+## 🧪 自动测试
+
+本项目使用 GitHub Actions 进行跨平台自动测试：
+
+[![Test Status](https://github.com/gugug168/cute-claude-hooks/workflows/%F0%9F%A7%AA%20%E8%B7%A8%E5%B9%B3%E5%8F%B0%E6%B2%99%E7%9B%92%E6%B5%8B%E8%AF%95/badge.svg)](https://github.com/gugug168/cute-claude-hooks/actions)
+
+| 平台 | 状态 | 测试内容 |
+|-----|------|---------|
+| 🐧 Linux | ✅ | Bash 脚本语法 + 沙盒汉化测试 |
+| 🍎 macOS | ✅ | Bash 脚本语法 + 沙盒汉化测试 |
+| 🪟 Windows | ✅ | PowerShell 语法 + 沙盒汉化测试 |
+
+---
 
 ## 📚 完整文档
 
 查看 [SKILL.md](./SKILL.md) 获取：
+
 - 🌸 界面汉化详细说明
 - 🎨 颜色/Emoji 自定义
 - 🔧 进阶自定义技巧
@@ -100,57 +225,46 @@ curl -fsSL https://gitee.com/your-username/cute-claude-hooks/raw/main/install-gi
 - 📖 实战经验和踩坑记录
 - 💡 常见需求示例
 
-## 🔧 快速自定义
+---
 
-### 己8具提示
-编辑 `~/.claude/hooks/tool-tips-post.sh`：
+## 🤝 贡献
 
-```bash
-# 修改颜色（最后一行）
-printf '\033[38;5;206m...'  # 206=粉色，196=红色,46=绿色...
+欢迎提交 Issue 和 PR！特别是：
 
-# 修改 Emoji（get_tip 函数中）
-"Read") echo "📚 读取文件: ..." ;;  # 改成你喜欢的
-```
+- 🌍 新的汉化词条
+- 🔧 新的命令解释
+- 📸 效果截图
+- 📝 文档改进
+- 🐛 Bug 修复
 
-### 汉化
-编辑 `~/.claude/localize/keyword.conf` 添加新的翻译：
+### 贡献截图
 
-```bash
-# 格式: 原文|译文
-Your-english-text|你的中文翻译
-```
+如果你使用了本项目，欢迎贡献效果截图：
 
-## 📁 文件说明
+1. Fork 本仓库
+2. 将截图放入 `screenshots/` 目录
+3. 提交 Pull Request
 
-| 文件 | 用途 |
-|------|------|
-| `tool-tips-post.sh` | 工具提示 Hook 脚本 |
-| `install.ps1` | Windows 安装脚本 (GitHub) |
-| `install.sh` | Linux/macOS 安装脚本 (GitHub) |
-| `install-gitee.ps1` | Windows 安装脚本 (Gitee) |
-| `install-gitee.sh` | Linux/macOS 安装脚本 (Gitee) |
-| `localize/keyword.conf` | 界面汉化关键词配置 |
-| `localize/localize.sh` | 界面汉化脚本 (Linux/macOS) |
-| `localize/localize.ps1` | 界面汉化脚本 (Windows) |
-| `localize/restore.sh` | 恢复英文脚本 (Linux/macOS) |
-| `localize/restore.ps1` | 恢复英文脚本 (Windows) |
-| `SKILL.md` | 完整自定义指南 |
+---
 
 ## 🌸 推荐搭配
 
 如果你想要更完整的中文体验，可以搭配使用：
 
-- **mine-auto-cli** - 更多 Claude Code 辅助功能
+- **Claude Code** - Anthropic 官方 AI 编程助手
 
-## 🤝 贡献
-
-欢迎提交 Issue 和 PR！特别是：
-- 🌍 新的汉化词条
-- 🔧 新的 MCP 服务支持
-- 📝 文档改进
-- 🐛 Bug 修复
+---
 
 ## 📄 许可证
 
-[MIT License](./LICENSE)
+[MIT License](./LICENSE) - 自由使用、修改和分发
+
+---
+
+<p align="center">
+  Made with 🌸 by <a href="https://github.com/gugug168">gugug168</a>
+</p>
+
+<p align="center">
+  如果这个项目对你有帮助，请给一个 ⭐ Star 支持一下！
+</p>
