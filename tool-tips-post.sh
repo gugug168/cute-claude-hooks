@@ -5,11 +5,23 @@
 
 input=$(cat)
 
-# 提取字段
-tool_name=$(echo "$input" | sed -n 's/.*"tool_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
-file_path=$(echo "$input" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1 | sed 's/\\\\/\\/g')
-pattern=$(echo "$input" | sed -n 's/.*"pattern"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
-bash_cmd=$(echo "$input" | sed -n 's/.*"command"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1 | sed 's/\\n/\n/g')
+# 提取 JSON 字段（处理转义引号 \"）
+extract_field() {
+    local key="$1"
+    # 将 \" 替换为占位符，避免 sed 的 [^"] 在引号处中断
+    local clean
+    clean=$(printf '%s' "$input" | sed 's/\\"/__DQ__/g')
+    local val
+    val=$(printf '%s' "$clean" | sed -n "s/.*\"${key}\"[[:space:]]*:[[:space:]]*\"\([^\"]*\)\".*/\1/p" | head -1)
+    # 恢复转义: __DQ__ → ", \n → 换行
+    val=$(printf '%s' "$val" | sed 's/__DQ__/"/g; s/\\n/\n/g')
+    printf '%s' "$val"
+}
+
+tool_name=$(extract_field "tool_name")
+file_path=$(extract_field "file_path")
+pattern=$(extract_field "pattern")
+bash_cmd=$(extract_field "command")
 
 # 路径简化：只显示文件名
 short_path() {

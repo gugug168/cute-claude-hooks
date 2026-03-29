@@ -66,7 +66,7 @@
 - 🖥️ **跨平台** - Windows/macOS/Linux 通用
 - 📦 **轻量级** - 无依赖，秒级安装
 - 🔧 **易自定义** - 完整的自定义指南
-- 🇨🇳 **国内镜像** - 支持 Gitee 加速安装
+- 🇨🇳 **国内加速** - 支持 npmmirror 镜像安装
 - 🧪 **自动测试** - GitHub Actions 三平台自动测试
 
 ---
@@ -91,28 +91,21 @@ cute-claude-hooks-restore
 npx cute-claude-hooks-install
 ```
 
-### 方式二：一键脚本安装
+### 方式二：国内加速安装（推荐国内用户）
 
-**Windows (PowerShell):**
-```powershell
-irm https://raw.githubusercontent.com/gugug168/cute-claude-hooks/main/install.ps1 | iex
-```
+如果 npm 官方源速度慢，可以使用国内镜像：
 
-**macOS/Linux:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/gugug168/cute-claude-hooks/main/install.sh | bash
+# 使用 npmmirror 镜像安装
+npm install -g cute-claude-hooks --registry=https://registry.npmmirror.com
+
+# 运行安装脚本
+cute-claude-hooks-install
 ```
 
-### 方式三：Gitee 镜像（国内用户推荐）
-
-**Windows (PowerShell):**
-```powershell
-irm https://gitee.com/gugug168/cute-claude-hooks/raw/main/install-gitee.ps1 | iex
-```
-
-**macOS/Linux:**
+**或者使用 npx：**
 ```bash
-curl -fsSL https://gitee.com/gugug168/cute-claude-hooks/raw/main/install-gitee.sh | bash
+npx cute-claude-hooks-install
 ```
 
 ### 安装选项
