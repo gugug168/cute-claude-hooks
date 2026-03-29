@@ -538,6 +538,182 @@ echo "$(date '+%Y-%m-%d %H:%M:%S') | $tool_name | $file_path" >> "$log_file"
 
 ---
 
+## 🪟 Windows 环境深度自检指南
+
+> **Windows 用户必读！** 90% 的 Hooks 失效问题都源于环境配置不当。请按以下五个阶段逐一排查。
+
+### 快速自检命令
+
+将以下内容直接粘贴给 Claude Code，让它帮你排查：
+
+> "你现在是一个 Windows 专家级运维工程师。请针对以下五个维度，深度扫描我的系统路径、配置和环境变量，找出可能导致 Claude Code Hooks 失效、命令不识别或路径冲突的问题，并给出修复建议。"
+
+---
+
+### [第一阶段] 基础底座：Shell 与权限
+
+| 检查项 | 命令 | 正确状态 |
+|--------|------|---------|
+| 终端版本 | `$PSVersionTable.PSVersion` | PowerShell 7+ (推荐) |
+| 执行策略 | `Get-ExecutionPolicy` | `RemoteSigned` 或 `Unrestricted` |
+| 管理员权限 | `([Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole('Administrators')` | 按需判断 |
+
+**常见问题：**
+
+- **PowerShell 5.1 (蓝底)** → UTF-8 支持不完整，建议升级到 [PowerShell 7](https://aka.ms/PSWindows)
+- **ExecutionPolicy = Restricted** → 所有脚本被静默拦截，运行 `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`
+- **非管理员终端** → 某些 npm 全局安装需要管理员权限
+
+---
+
+### [第二阶段] 核心动力：Node.js 与 NPM
+
+| 检查项 | 命令 | 正确状态 |
+|--------|------|---------|
+| Node 版本 | `node --version` | v14.0.0+ |
+| Node 路径 | `where node` | 路径无中文、无空格 |
+| npm 全局前缀 | `npm config get prefix` | 非用户文档目录 |
+| npm 全局包路径 | `npm root -g` | 路径无中文 |
+
+**常见问题：**
+
+- **路径含空格** (`C:\Program Files\nodejs`) → 通常没问题，但某些工具可能报错
+- **路径含中文** (`C:\Users\小明\...`) → 会导致 npm 全局包安装失败，建议修改 npm prefix：
+  ```powershell
+  npm config set prefix "C:\npm-global"
+  # 然后将 C:\npm-global 加入系统 PATH
+  ```
+- **nvm-windows 冲突** → 如果同时装了 nvm-windows 和 Node 官网包，可能路径冲突，建议只保留一个
+
+---
+
+### [第三阶段] 模拟环境：Git Bash 与 Unix 工具 ⚠️ 最关键
+
+| 检查项 | 命令 | 正确状态 |
+|--------|------|---------|
+| Git 安装 | `git --version` | git version 2.x |
+| sh 可用性 | `sh --version` | GNU Bash 4.x+ |
+| Git\bin 在 PATH | `$env:Path -split ';' | Select-String 'Git\\bin'` | 存在 |
+| Git\usr\bin 在 PATH | `$env:Path -split ';' | Select-String 'Git\\usr\\bin'` | 存在 |
+| 换行符策略 | `git config --global core.autocrlf` | **`input`** (必须是这个!) |
+| Hooks 路径 | `git config --global core.hooksPath` | 为空或未设置 |
+
+**⚠️ 头号死穴：`core.autocrlf = true`**
+
+这是 Windows 上 Hooks 失效的第一大原因！当 `core.autocrlf = true` 时：
+1. Git 会在 checkout 时自动把 LF 转为 CRLF
+2. `.sh` 脚本变成 CRLF 换行
+3. bash 执行 CRLF 脚本报 `\r: command not found`
+
+**修复：**
+```bash
+git config --global core.autocrlf input
+```
+
+> **为什么用 `input` 而不是 `false`？**
+> - `input`：提交时 CRLF → LF，检出时不动。Windows 写代码没问题，脚本也不会被破坏
+> - `false`：完全不管换行符。如果你用 Windows 编辑器写代码，可能会把 CRLF 提交到仓库
+
+**验证 sh 可用：**
+```powershell
+# 应该输出 bash 版本信息
+sh --version
+# 如果报错，检查 PATH 是否包含 Git\bin
+$env:Path -split ';' | Where-Object { $_ -match 'Git\\\\bin' }
+```
+
+---
+
+### [第四阶段] 文件系统：字符编码与路径
+
+| 检查项 | 命令 | 正确状态 |
+|--------|------|---------|
+| UTF-8 区域设置 | 打开: `intl.cpl` → 管理 → 更改系统区域设置 | 勾选 "Beta: 使用 Unicode UTF-8" |
+| 长路径支持 | `Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem -Name LongPathsEnabled` | `LongPathsEnabled = 1` |
+| 用户名路径 | `echo $env:USERPROFILE` | 无中文字符 |
+
+**常见问题：**
+
+- **中文用户名** (`C:\Users\古古`) → 通常没问题，但某些老旧工具可能报错
+- **项目路径含中文** (`D:\项目资料\AI工具`) → 极易出问题！建议改为英文路径
+- **长路径** (`C:\Users\xxx\.claude\plugins\cache\...\node_modules\...`) → 超过 260 字符会导致 Node 报错
+
+**开启长路径支持：**
+```powershell
+# 管理员 PowerShell 运行
+Set-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem -Name LongPathsEnabled -Value 1
+# 需要重启生效
+```
+
+---
+
+### [第五阶段] 网络与代理
+
+| 检查项 | 命令 | 正确状态 |
+|--------|------|---------|
+| HTTP 代理 | `echo $env:HTTP_PROXY` | 按需设置 |
+| HTTPS 代理 | `echo $env:HTTPS_PROXY` | 按需设置 |
+| npm 代理 | `npm config get proxy` | 按需设置 |
+| SSL 验证 | `npm config get strict-ssl` | `true` |
+
+**国内用户特别注意：**
+
+如果使用公司代理或 VPN：
+```powershell
+# 如果代理导致 SSL 错误（不推荐，仅调试用）
+npm config set strict-ssl false
+
+# 推荐方式：使用国内镜像
+npm config set registry https://registry.npmmirror.com
+```
+
+---
+
+### 一键自检脚本
+
+将以下内容保存为 `check-env.ps1` 运行，或直接粘贴到 PowerShell：
+
+```powershell
+Write-Host "`n🌸 Cute Claude Hooks — Windows 环境自检 🌸`n" -ForegroundColor Magenta
+
+$pass = "✅"; $fail = "❌"; $warn = "⚠️"
+
+# Stage 1: Shell
+Write-Host "[第一阶段] Shell 与权限" -ForegroundColor Cyan
+$psVer = $PSVersionTable.PSVersion.Major
+Write-Host ($psVer -ge 7 ? "$pass PowerShell $psVer" : "$warn PowerShell $psVer (建议升级到 7+)")
+$policy = Get-ExecutionPolicy
+Write-Host ($policy -ne 'Restricted' ? "$pass 执行策略: $policy" : "$fail 执行策略: $policy (需设为 RemoteSigned)")
+
+# Stage 2: Node
+Write-Host "`n[第二阶段] Node.js" -ForegroundColor Cyan
+try { $n = node --version 2>$null; Write-Host "$pass Node $n" } catch { Write-Host "$fail Node 未安装" }
+$prefix = npm config get prefix 2>$null
+Write-Host ($prefix -match '[\u4e00-\u9fff]' ? "$fail npm prefix 含中文: $prefix" : "$pass npm prefix: $prefix")
+
+# Stage 3: Git Bash (关键!)
+Write-Host "`n[第三阶段] Git Bash (最关键)" -ForegroundColor Yellow
+try { $g = git --version 2>$null; Write-Host "$pass $g" } catch { Write-Host "$fail Git 未安装" }
+$autocrlf = git config --global core.autocrlf 2>$null
+Write-Host ($autocrlf -eq 'input' ? "$pass core.autocrlf = input" : "$fail core.autocrlf = $autocrlf (必须改为 input!)")
+$hookPath = git config --global core.hooksPath 2>$null
+Write-Host ($hookPath ? "$warn core.hooksPath = $hookPath (可能拦截 Claude Hooks)" : "$pass 无全局 hooksPath 覆盖")
+
+# Stage 4: Encoding
+Write-Host "`n[第四阶段] 文件系统" -ForegroundColor Cyan
+$userPath = $env:USERPROFILE
+Write-Host ($userPath -match '[\u4e00-\u9fff]' ? "$warn 用户路径含中文: $userPath" : "$pass 用户路径: $userPath")
+
+# Stage 5: Network
+Write-Host "`n[第五阶段] 网络" -ForegroundColor Cyan
+$reg = npm config get registry 2>$null
+Write-Host ($reg -match 'npmmirror' ? "$pass npm 镜像: $reg" : "$pass npm 源: $reg")
+
+Write-Host "`n🌸 自检完成！如有 ❌ 项请参考上方修复建议 🌸`n" -ForegroundColor Magenta
+```
+
+---
+
 ## 🐛 问题排查
 
 ### 提示不显示
