@@ -30,8 +30,30 @@ function getCliPath() {
     process.exit(1);
   }
 
-  const cliPath = path.join(npmRoot, pkgName, 'cli.js');
-  const cliBak = path.join(npmRoot, pkgName, 'cli.bak.js');
+  const pkgDir = path.join(npmRoot, pkgName);
+
+  // 新版 Claude Code (>=2.0) 使用原生可执行文件，不再支持汉化
+  // 检查是否安装了新版（bin/claude.exe 存在但 cli.js 不存在）
+  const cliPath = path.join(pkgDir, 'cli.js');
+  const cliWrapperPath = path.join(pkgDir, 'cli-wrapper.cjs');
+  const cliExePath = path.join(pkgDir, 'bin', 'claude.exe');
+  const isNewVersion = fs.existsSync(cliExePath) && !fs.existsSync(cliPath);
+
+  if (isNewVersion) {
+    console.log(`${RED}很抱歉，您的 Claude Code 版本不支持汉化功能${NC}`);
+    console.log('');
+    console.log(`${YELLOW}原因：Claude Code 2.0+ 已改为原生可执行文件，无法通过字符串替换进行汉化${NC}`);
+    console.log('');
+    console.log(`${GREEN}建议：${NC}`);
+    console.log('  1. 如果您需要中文界面，可以继续使用 hooks 功能（工具使用提示）');
+    console.log('  2. 汉化功能目前仅支持 Claude Code 1.x 版本');
+    console.log('  3. 关注该项目更新，等待未来版本的支持');
+    console.log('');
+    console.log(`${MAGENTA}详细信息：https://github.com/gugug168/cute-claude-hooks/issues${NC}`);
+    process.exit(1);
+  }
+
+  const cliBak = path.join(pkgDir, 'cli.bak.js');
 
   if (!fs.existsSync(cliPath)) {
     console.log(`${RED}找不到 Claude Code CLI 文件${NC}`);

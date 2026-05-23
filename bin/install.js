@@ -388,11 +388,14 @@ function installLocalize() {
     const jsScript = path.join(localizeDir, 'localize.js');
     if (fs.existsSync(jsScript)) {
       execSync(`node "${jsScript}"`, { stdio: 'inherit' });
+      return true; // 汉化成功
     }
   } catch (err) {
+    // 汉化失败（可能是新版 Claude Code 不支持）
     console.log(`${YELLOW}警告: 汉化过程中遇到问题${NC}`);
-    console.log(`${YELLOW}可手动执行: node ~/.claude/localize/localize.js${NC}`);
+    console.log(`${YELLOW}可手动执行: node ~/.claude/localize/localize.js 查看详情${NC}`);
   }
+  return false; // 汉化失败
 }
 
 // ========== 诊断模式 ==========
@@ -580,14 +583,12 @@ function main() {
       break;
     case 'localize':
     case '2':
-      installLocalize();
-      locOk = true;
+      locOk = installLocalize();
       break;
     case 'all':
     default:
       hookOk = installHook();
-      installLocalize();
-      locOk = true;
+      locOk = installLocalize();
       break;
   }
 
@@ -607,6 +608,8 @@ function main() {
 
   if (locOk) {
     console.log(`${GREEN}  汉化: 已安装${NC}`);
+  } else {
+    console.log(`${YELLOW}  汉化: 不支持当前版本${NC}`);
   }
 
   console.log(`${YELLOW}  请重启 Claude Code 使所有更改生效${NC}`);
