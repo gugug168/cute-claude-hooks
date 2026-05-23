@@ -6,11 +6,19 @@
 [![Cross Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-green.svg)](https://github.com/gugug168/cute-claude-hooks)
 [![GitHub Actions](https://github.com/gugug168/cute-claude-hooks/actions/workflows/test-localization.yml/badge.svg)](https://github.com/gugug168/cute-claude-hooks/actions/workflows/test-localization.yml)
 
-> 🌸 让 Claude Code 拥有完整的中文体验！中文提示 + 界面汉化，专为编程小白设计
+> ⚠️ **重要版本兼容性公告 (2025-05)**
+>
+> Anthropic 从 **Claude Code v2.1.113** 开始将 npm 包从 Node.js 脚本 (`cli.js`) 改为**编译二进制** (`claude.exe`)。
+> 这导致所有基于字符串替换的界面汉化方案**彻底失效**，包括本项目的界面汉化功能。
+>
+> | Claude Code 版本 | 工具提示 Hook | 界面汉化 |
+> |-----------------|:------------:|:--------:|
+> | ≤ 2.1.112 | ✅ 可用 | ✅ 可用 |
+> | ≥ 2.1.113 | ✅ 可用 | ❌ **已失效** |
+>
+> **工具提示 Hook 不受影响**，所有版本均可正常使用。界面汉化功能等待后续适配方案。
 
-> **💡 安装方式说明：**
-> - **Hook 脚本**（工具提示 + 任务完成通知）：支持 **NPM 安装** 和 **手动安装** 两种方式
-> - **界面汉化**（配置面板、命令说明等）：**仅支持 NPM 安装**，暂不支持手动安装
+> 🌸 让 Claude Code 拥有中文体验！工具提示 Hook，专为编程小白设计（界面汉化仅支持 ≤ 2.1.112 版本）
 
 ## 📸 效果预览
 
@@ -22,11 +30,13 @@
 
 ![工具提示带翻译效果](./screenshots/03-tool-tips-with-translation.png)
 
-### 🌐 界面汉化效果
+### 🌐 界面汉化效果（⚠️ 仅 ≤ 2.1.112，新版已失效）
 
 ![配置面板中文效果](./screenshots/02-config-chinese.png)
 
 ![斜杠命令中文效果](./screenshots/04-slash-commands-chinese.png)
+
+> ⚠️ 以上界面汉化截图来自旧版本（≤ 2.1.112）。新版 Claude Code（≥ 2.1.113）已改为编译二进制，此功能无法使用。
 
 ### 📝 汉化对照表
 
@@ -65,8 +75,8 @@
 
 ## ✨ 特性
 
-- 📖 **中文操作提示** - 每个操作都有详细的中文解释，小白也能看懂
-- 🌸 **界面汉化** - 配置面板、命令说明、快捷键提示全中文
+- 📖 **中文操作提示** - 每个操作都有详细的中文解释，小白也能看懂（所有版本可用）
+- 🌸 **界面汉化** - 配置面板、命令说明、快捷键提示全中文（⚠️ 仅 ≤ 2.1.112）
 - 🖥️ **跨平台** - Windows/macOS/Linux 通用
 - 📦 **轻量级** - 无依赖，秒级安装
 - 🔧 **易自定义** - 完整的自定义指南
@@ -79,15 +89,17 @@
 
 ### 功能与安装方式对应表
 
-| 功能 | NPM 安装 | 手动/脚本安装 |
-|------|:--------:|:------------:|
-| 📖 工具提示 Hook (tool-tips-post.sh) | ✅ | ✅ |
-| 🔔 任务完成通知 Hook (task-done-notify.sh) | ✅ | ✅ |
-| 🌐 界面汉化 (配置面板、斜杠命令等) | ✅ | ❌ 暂不支持 |
+| 功能 | NPM 安装 | 手动/脚本安装 | 版本要求 |
+|------|:--------:|:------------:|---------|
+| 📖 工具提示 Hook (tool-tips-post.sh) | ✅ | ✅ | 所有版本 |
+| 🔔 任务完成通知 Hook (task-done-notify.sh) | ✅ | ✅ | 所有版本 |
+| 🌐 界面汉化 (配置面板、斜杠命令等) | ⚠️ | ❌ | **仅 ≤ 2.1.112** |
 
-> 界面汉化需要修改 Claude Code 内部文件，目前仅通过 NPM 安装脚本自动完成，暂不提供手动安装方式。
+> ⚠️ **界面汉化已失效**：Claude Code v2.1.113 起改为编译二进制，无法再通过字符串替换修改界面文案。工具提示 Hook 不受影响，所有版本均可使用。
 
 ### 方式一：NPM 安装（推荐）
+
+> ⚠️ 安装前请先检查版本：`claude --version`。如果你的版本 ≥ 2.1.113，界面汉化将不可用，但仍可安装工具提示 Hook。
 
 ```bash
 # 全局安装
@@ -151,7 +163,9 @@ npx cute-claude-hooks-install
 🌸 小白提示：📦 安装依赖包（下载项目所需的库） 🌸
 ```
 
-### 2️⃣ 界面汉化 (Localization)
+### 2️⃣ 界面汉化 (Localization) — ⚠️ 仅支持 Claude Code ≤ 2.1.112
+
+> **注意**: Claude Code 从 v2.1.113 开始改为编译二进制发布，界面汉化功能已失效。此功能仅在旧版本（≤ 2.1.112）上可用。
 
 将 Claude Code 的英文界面翻译成中文：
 
@@ -161,7 +175,7 @@ npx cute-claude-hooks-install
 - ✅ 欢迎界面汉化
 - ✅ 状态信息汉化
 
-### 3️⃣ 恢复功能 (Restore)
+### 3️⃣ 恢复功能 (Restore) — 仅 ≤ 2.1.112
 
 随时可以恢复到英文界面：
 
@@ -283,7 +297,7 @@ git)
 
 > **注意：** Claude Code 的 hook 输出不支持自定义颜色，提示会以默认颜色显示。
 
-### 添加新的汉化词条
+### 添加新的汉化词条（仅 ≤ 2.1.112）
 
 编辑 `~/.claude/localize/keyword.js`：
 
