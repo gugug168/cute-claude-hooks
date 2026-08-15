@@ -1,4 +1,22 @@
-# 🌸 Cute Claude Hooks
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Cute Claude Hooks：为 Claude Code 提供中文工具提示；旧版界面汉化有明确版本边界。">
+</p>
+
+中文增强工具包。当前真实可用核心是工具提示与完成通知；界面汉化仅适用于 Claude Code 2.1.112 及以前版本。
+
+## 一眼看懂
+
+| 价值 | 真实证据 |
+| --- | --- |
+| 为 Claude Code 提供中文工具提示；旧版界面汉化有明确版本边界。 | 工具提示可用 · 三平台 · 兼容性声明 |
+
+## 从这里开始
+
+```text
+npm install -g cute-claude-hooks
+```
+
+## 完整说明
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-orange.svg)](https://claude.ai/code)

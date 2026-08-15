@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Cute Claude Hooks</title>
+  <desc id="desc">为 Claude Code 提供中文工具提示；旧版界面汉化有明确版本边界。；工具提示可用、三平台、兼容性声明</desc>
+  <rect width="1200" height="360" rx="28" fill="#241b2f"/>
+  <path d="M48 74H1152M48 302H1152" stroke="#fff7fb" stroke-opacity=".13"/>
+  <rect x="58" y="58" width="176" height="30" rx="15" fill="#fb7ab7" fill-opacity=".18" stroke="#fb7ab7" stroke-opacity=".65"/>
+  <text x="76" y="79" fill="#fb7ab7" font-size="15" font-weight="700" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, monospace">CLAUDE CODE ENHANCEMENT</text>
+  <text x="58" y="147" fill="#fff7fb" font-size="50" font-weight="760" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif">Cute Claude Hooks</text>
+  <text x="58" y="193" fill="#fff7fb" font-size="25" font-weight="430" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif">为 Claude Code 提供中文工具提示；旧版界面汉化有明确版本边界。</text>
+  <path d="M58 230H660" stroke="#fff7fb" stroke-opacity=".2"/>
+  <g transform="translate(58 257)"><circle cx="8" cy="0" r="7" fill="#a0e8af"/><text x="26" y="7" fill="#fff7fb" font-size="19" font-weight="600" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif">工具提示可用</text></g><g transform="translate(250 257)"><circle cx="8" cy="0" r="7" fill="#a0e8af"/><text x="26" y="7" fill="#fff7fb" font-size="19" font-weight="600" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif">三平台</text></g><g transform="translate(442 257)"><circle cx="8" cy="0" r="7" fill="#a0e8af"/><text x="26" y="7" fill="#fff7fb" font-size="19" font-weight="600" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif">兼容性声明</text></g>
+  <rect x="750" y="108" width="390" height="160" rx="18" fill="#05070a" fill-opacity=".42" stroke="#ffffff" stroke-opacity=".16"/><circle cx="782" cy="134" r="7" fill="#a0e8af"/><circle cx="806" cy="134" r="7" fill="#fb7ab7"/><circle cx="830" cy="134" r="7" fill="#fff7fb"/><text x="782" y="178" fill="#ffffff" font-size="21" font-weight="500" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, monospace">&gt; hook: tool-tips</text><text x="782" y="209" fill="#ffffff" font-size="21" font-weight="500" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, monospace">&gt; status: ready</text><text x="782" y="240" fill="#ffffff" font-size="21" font-weight="500" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, monospace">&gt; compat: checked</text>
+</svg>
